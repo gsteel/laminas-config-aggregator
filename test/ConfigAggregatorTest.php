@@ -57,6 +57,22 @@ class ConfigAggregatorTest extends TestCase
         @rmdir(dirname($this->cacheFile));
     }
 
+    public function testConfigAggregatorRaisesExceptionOnDuplicateProvider(): void
+    {
+        $configProvider = new class
+        {
+            public function __invoke(): array
+            {
+                return [];
+            }
+        };
+        $this->expectException(InvalidConfigProviderException::class);
+        new ConfigAggregator([
+            $configProvider::class,
+            $configProvider::class,
+        ]);
+    }
+
     public function testConfigAggregatorRaisesExceptionIfProviderClassDoesNotExist(): void
     {
         $this->expectException(InvalidConfigProviderException::class);

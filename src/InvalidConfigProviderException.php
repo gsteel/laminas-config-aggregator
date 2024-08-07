@@ -14,6 +14,18 @@ class InvalidConfigProviderException extends RuntimeException
      * @param string $provider
      * @return self
      */
+    public static function fromDuplicateProvider($provider)
+    {
+        return new self(sprintf(
+            'Duplicate config provider detected: %s.',
+            $provider
+        ));
+    }
+
+    /**
+     * @param string $provider
+     * @return self
+     */
     public static function fromNamedProvider($provider)
     {
         return new self(sprintf(

@@ -18,6 +18,7 @@ use function class_exists;
 use function date;
 use function file_exists;
 use function gettype;
+use function in_array;
 use function is_array;
 use function is_callable;
 use function is_int;
@@ -67,6 +68,7 @@ EOT;
      * @param list<PreProcessorCallable|class-string> $preProcessors Array of pre-processors. These may be callables, or
      *     string values representing classes that act as pre-processors. If the latter, they must be instantiable
      *     without constructor arguments.
+     * @throws InvalidConfigProviderException
      */
     public function __construct(
         iterable $providers = [],
@@ -90,6 +92,34 @@ EOT;
     public function getMergedConfig()
     {
         return $this->config;
+    }
+
+    /**
+     * Throw an exception if duplicate config providers are found.
+     *
+     * Closures are not natively serializable, so we need to skip them.
+     *
+     * @throws InvalidConfigProviderException
+     */
+    private function removeDuplicateProviders(iterable $providers): iterable
+    {
+        $uniqueProviders = [];
+
+        foreach ($providers as $provider) {
+            if ($provider instanceof Closure) {
+                continue;
+            }
+
+            if (in_array($provider, $uniqueProviders)) {
+                throw InvalidConfigProviderException::fromDuplicateProvider(
+                    is_callable($provider) ? $provider::class : $provider
+                );
+            }
+
+            $uniqueProviders[] = $provider;
+        }
+
+        return $uniqueProviders;
     }
 
     /**
@@ -296,6 +326,7 @@ EOT;
      * @param list<PreProcessorCallable|class-string> $processors
      * @param ProviderIterable $providers
      * @return ProviderIterable
+     * @throws InvalidConfigProviderException
      */
     private function preProcessProviders(array $processors, iterable $providers): iterable
     {
@@ -305,7 +336,7 @@ EOT;
             $providers         = $processorCallable($providers);
         }
 
-        return $providers;
+        return $this->removeDuplicateProviders($providers);
     }
 
     /**
