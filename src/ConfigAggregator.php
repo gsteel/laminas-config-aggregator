@@ -107,6 +107,7 @@ EOT;
 
         foreach ($providers as $provider) {
             if ($provider instanceof Closure) {
+                $uniqueProviders[] = $provider;
                 continue;
             }
 
