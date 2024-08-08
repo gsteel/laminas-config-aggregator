@@ -81,7 +81,7 @@ EOT;
             return;
         }
 
-        $providers    = $this->validateDuplicateProviders($providers);
+        $providers    = $this->validateNoDuplicateProviders($providers);
         $providers    = $this->preProcessProviders($preProcessors, $providers);
         $this->config = $this->loadConfigFromProviders($providers);
         $this->config = $this->postProcessConfig($postProcessors, $this->config);
@@ -103,7 +103,7 @@ EOT;
      * @return ProviderIterable
      * @throws InvalidConfigProviderException
      */
-    private function validateDuplicateProviders(iterable $providers): iterable
+    private function validateNoDuplicateProviders(iterable $providers): iterable
     {
         $uniqueProviders = [];
 
