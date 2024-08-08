@@ -24,6 +24,7 @@ use function is_callable;
 use function is_int;
 use function is_object;
 use function is_string;
+use function serialize;
 use function sprintf;
 
 /**
@@ -80,6 +81,7 @@ EOT;
             return;
         }
 
+        $providers    = $this->removeDuplicateProviders($providers);
         $providers    = $this->preProcessProviders($preProcessors, $providers);
         $this->config = $this->loadConfigFromProviders($providers);
         $this->config = $this->postProcessConfig($postProcessors, $this->config);
@@ -97,8 +99,8 @@ EOT;
     /**
      * Throw an exception if duplicate config providers are found.
      *
-     * Closures are not natively serializable, so we need to skip them.
-     *
+     * @param ProviderIterable $providers
+     * @return ProviderIterable
      * @throws InvalidConfigProviderException
      */
     private function removeDuplicateProviders(iterable $providers): iterable
@@ -106,15 +108,14 @@ EOT;
         $uniqueProviders = [];
 
         foreach ($providers as $provider) {
-            if ($provider instanceof Closure) {
-                $uniqueProviders[] = $provider;
-                continue;
-            }
-
             if (in_array($provider, $uniqueProviders)) {
-                throw InvalidConfigProviderException::fromDuplicateProvider(
-                    is_callable($provider) ? $provider::class : $provider
-                );
+                if (is_object($provider)) {
+                    $provider = $provider::class;
+                }
+                if (! is_string($provider)) {
+                    $provider = serialize($provider);
+                }
+                throw InvalidConfigProviderException::fromDuplicateProvider($provider);
             }
 
             $uniqueProviders[] = $provider;
@@ -337,7 +338,7 @@ EOT;
             $providers         = $processorCallable($providers);
         }
 
-        return $this->removeDuplicateProviders($providers);
+        return $providers;
     }
 
     /**
