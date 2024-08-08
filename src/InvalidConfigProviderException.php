@@ -10,11 +10,7 @@ use function sprintf;
 
 class InvalidConfigProviderException extends RuntimeException
 {
-    /**
-     * @param string $provider
-     * @return self
-     */
-    public static function fromDuplicateProvider($provider)
+    public static function fromDuplicateProvider(string $provider): self
     {
         return new self(sprintf(
             '%s is registered more than once. Config providers should be unique. In case a specific order is'

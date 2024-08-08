@@ -81,7 +81,7 @@ EOT;
             return;
         }
 
-        $providers    = $this->removeDuplicateProviders($providers);
+        $providers    = $this->validateDuplicateProviders($providers);
         $providers    = $this->preProcessProviders($preProcessors, $providers);
         $this->config = $this->loadConfigFromProviders($providers);
         $this->config = $this->postProcessConfig($postProcessors, $this->config);
@@ -103,13 +103,19 @@ EOT;
      * @return ProviderIterable
      * @throws InvalidConfigProviderException
      */
-    private function removeDuplicateProviders(iterable $providers): iterable
+    private function validateDuplicateProviders(iterable $providers): iterable
     {
         $uniqueProviders = [];
 
         foreach ($providers as $provider) {
-            if (get_debug_type($provider) === 'string' && in_array($provider, $uniqueProviders, true)) {
-                throw InvalidConfigProviderException::fromDuplicateProvider($provider);
+            if (! is_string($provider) && ! is_object($provider)) {
+                continue;
+            }
+
+            if (in_array($provider, $uniqueProviders, true)) {
+                throw InvalidConfigProviderException::fromDuplicateProvider(
+                    is_string($provider) ? $provider : get_debug_type($provider)
+                );
             }
 
             $uniqueProviders[] = $provider;
