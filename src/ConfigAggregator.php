@@ -17,6 +17,7 @@ use function array_key_exists;
 use function class_exists;
 use function date;
 use function file_exists;
+use function get_debug_type;
 use function gettype;
 use function in_array;
 use function is_array;
@@ -24,7 +25,6 @@ use function is_callable;
 use function is_int;
 use function is_object;
 use function is_string;
-use function serialize;
 use function sprintf;
 
 /**
@@ -108,13 +108,7 @@ EOT;
         $uniqueProviders = [];
 
         foreach ($providers as $provider) {
-            if (in_array($provider, $uniqueProviders)) {
-                if (is_object($provider)) {
-                    $provider = $provider::class;
-                }
-                if (! is_string($provider)) {
-                    $provider = serialize($provider);
-                }
+            if (get_debug_type($provider) === 'string' && in_array($provider, $uniqueProviders, true)) {
                 throw InvalidConfigProviderException::fromDuplicateProvider($provider);
             }
 

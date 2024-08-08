@@ -17,7 +17,8 @@ class InvalidConfigProviderException extends RuntimeException
     public static function fromDuplicateProvider($provider)
     {
         return new self(sprintf(
-            'Duplicate config provider detected: %s.',
+            '%s is registered more than once. Config providers should be unique. In case a specific order is'
+            . ' required, please double check before deleting the duplicate(s).',
             $provider
         ));
     }
