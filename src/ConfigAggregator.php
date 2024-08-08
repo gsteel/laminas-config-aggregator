@@ -328,7 +328,6 @@ EOT;
      * @param list<PreProcessorCallable|class-string> $processors
      * @param ProviderIterable $providers
      * @return ProviderIterable
-     * @throws InvalidConfigProviderException
      */
     private function preProcessProviders(array $processors, iterable $providers): iterable
     {
