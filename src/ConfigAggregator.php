@@ -81,8 +81,8 @@ EOT;
             return;
         }
 
-        $providers    = $this->validateNoDuplicateProviders($providers);
         $providers    = $this->preProcessProviders($preProcessors, $providers);
+        $providers    = $this->validateNoDuplicateProviders($providers);
         $this->config = $this->loadConfigFromProviders($providers);
         $this->config = $this->postProcessConfig($postProcessors, $this->config);
         $this->cacheConfig($this->config, $cachedConfigFile);

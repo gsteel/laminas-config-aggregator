@@ -57,19 +57,71 @@ class ConfigAggregatorTest extends TestCase
         @rmdir(dirname($this->cacheFile));
     }
 
+    public function testConfigAggregatorAllowsMultipleClosures(): void
+    {
+        $aggregator = new ConfigAggregator([
+            static fn(): array => ['foo' => 'bar'],
+            static fn(): array => ['bar' => 'baz'],
+        ]);
+
+        self::assertSame(['foo' => 'bar', 'bar' => 'baz'], $aggregator->getMergedConfig());
+    }
+
+    public function testConfigAggregatorAllowsMultipleIdenticalClosures(): void
+    {
+        $aggregator = new ConfigAggregator([
+            static fn(): array => ['foo' => 'bar'],
+            static fn(): array => ['foo' => 'bar'],
+        ]);
+
+        self::assertSame(['foo' => 'bar'], $aggregator->getMergedConfig());
+    }
+
+    public function testConfigAggregatorAllowsMultipleInstancesOfTheSameClass(): void
+    {
+        $aggregator = new ConfigAggregator([
+            new FooConfigProvider(),
+            new FooConfigProvider(),
+        ]);
+
+        self::assertSame(['foo' => 'bar'], $aggregator->getMergedConfig());
+    }
+
+    public function testConfigAggregatorRaisesExceptionWhenValidProvidersMixedBetweenDuplicateProviders(): void
+    {
+        $configProvider = new FooConfigProvider();
+
+        $this->expectException(InvalidConfigProviderException::class);
+        $aggregator = new ConfigAggregator([
+            static fn(): array => ['foo' => 'bar'],
+            $configProvider,
+            static fn(): array => ['foo' => 'bar'],
+            $configProvider,
+            static fn(): array => ['foo' => 'bar'],
+        ]);
+
+        self::assertSame(['foo' => 'bar'], $aggregator->getMergedConfig());
+    }
+
+    public function testConfigAggregatorRaisesExceptionWhenSameInstanceProvidedMultipleTimes(): void
+    {
+        $configProvider = new FooConfigProvider();
+
+        $this->expectException(InvalidConfigProviderException::class);
+        $aggregator = new ConfigAggregator([
+            $configProvider,
+            $configProvider,
+        ]);
+
+        self::assertSame(['foo' => 'bar'], $aggregator->getMergedConfig());
+    }
+
     public function testConfigAggregatorRaisesExceptionOnDuplicateProvider(): void
     {
-        $configProvider = new class
-        {
-            public function __invoke(): array
-            {
-                return [];
-            }
-        };
         $this->expectException(InvalidConfigProviderException::class);
         new ConfigAggregator([
-            $configProvider::class,
-            $configProvider::class,
+            FooConfigProvider::class,
+            FooConfigProvider::class,
         ]);
     }
 

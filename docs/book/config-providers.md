@@ -62,6 +62,29 @@ array(4) {
 }
 ```
 
+## Duplicate providers
+
+In order to prevent accidental overwrites, `ConfigAggregator` will throw an
+`InvalidConfigProviderException` when it detects duplicate class-strings of
+the same type:
+
+```php
+new ConfigAggregator([
+    SomeProvider::class,
+    SomeProvider::class,
+]);
+```
+
+or duplicate instances of the same class:
+
+```php
+$someProvider = new SomeProvider();
+new ConfigAggregator([
+    $someProvider,
+    $someProvider,
+]);
+```
+
 ## Generators
 
 Config providers can be written as generators. This way, a single callable can
