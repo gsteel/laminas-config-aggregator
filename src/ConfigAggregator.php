@@ -165,9 +165,6 @@ EOT;
      * Copied from https://github.com/laminas/laminas-stdlib/blob/980ce463c29c1a66c33e0eb67961bba895d0e19e/src/ArrayUtils.php#L269
      * @codingStandardsIgnoreEnd
      *
-     * @param array $a
-     * @param array $b
-     *
      * @return $a
      */
     private function mergeArray(array $a, array $b): array

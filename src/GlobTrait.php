@@ -17,8 +17,6 @@ trait GlobTrait
      * Uses the laminas-stdlib Glob class for cross-platform globbing to
      * ensure results are sorted by brace pattern order _after_
      * sorting by filename.
-     *
-     * @return array
      */
     private function glob(string $pattern): array
     {
