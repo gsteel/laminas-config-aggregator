@@ -17,7 +17,7 @@ class ArrayProvider
     /**
      * @param array<TKey, TValue> $config
      */
-    public function __construct(private array $config)
+    public function __construct(private readonly array $config)
     {
     }
 
