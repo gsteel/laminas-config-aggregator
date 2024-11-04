@@ -92,15 +92,13 @@ class ConfigAggregatorTest extends TestCase
         $configProvider = new FooConfigProvider();
 
         $this->expectException(InvalidConfigProviderException::class);
-        $aggregator = new ConfigAggregator([
+        new ConfigAggregator([
             static fn(): array => ['foo' => 'bar'],
             $configProvider,
             static fn(): array => ['foo' => 'bar'],
             $configProvider,
             static fn(): array => ['foo' => 'bar'],
         ]);
-
-        self::assertSame(['foo' => 'bar'], $aggregator->getMergedConfig());
     }
 
     public function testConfigAggregatorRaisesExceptionWhenSameInstanceProvidedMultipleTimes(): void
@@ -108,12 +106,10 @@ class ConfigAggregatorTest extends TestCase
         $configProvider = new FooConfigProvider();
 
         $this->expectException(InvalidConfigProviderException::class);
-        $aggregator = new ConfigAggregator([
+        new ConfigAggregator([
             $configProvider,
             $configProvider,
         ]);
-
-        self::assertSame(['foo' => 'bar'], $aggregator->getMergedConfig());
     }
 
     public function testConfigAggregatorRaisesExceptionOnDuplicateProvider(): void

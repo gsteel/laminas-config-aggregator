@@ -105,9 +105,10 @@ EOT;
      */
     private function validateNoDuplicateProviders(iterable $providers): iterable
     {
-        $uniqueProviders = [];
+        $allProviders = $uniqueProviders = [];
 
         foreach ($providers as $provider) {
+            $allProviders[] = $provider;
             if (! is_string($provider) && ! is_object($provider)) {
                 continue;
             }
@@ -121,7 +122,7 @@ EOT;
             $uniqueProviders[] = $provider;
         }
 
-        return $uniqueProviders;
+        return $allProviders;
     }
 
     /**
