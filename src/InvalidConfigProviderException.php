@@ -10,6 +10,15 @@ use function sprintf;
 
 class InvalidConfigProviderException extends RuntimeException
 {
+    public static function fromDuplicateProvider(string $provider): self
+    {
+        return new self(sprintf(
+            '%s is registered more than once. Config providers should be unique. In case a specific order is'
+            . ' required, please double check before deleting the duplicate(s).',
+            $provider
+        ));
+    }
+
     /**
      * @param string $provider
      * @return self

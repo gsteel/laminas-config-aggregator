@@ -17,7 +17,9 @@ use function array_key_exists;
 use function class_exists;
 use function date;
 use function file_exists;
+use function get_debug_type;
 use function gettype;
+use function in_array;
 use function is_array;
 use function is_callable;
 use function is_int;
@@ -67,6 +69,7 @@ EOT;
      * @param list<PreProcessorCallable|class-string> $preProcessors Array of pre-processors. These may be callables, or
      *     string values representing classes that act as pre-processors. If the latter, they must be instantiable
      *     without constructor arguments.
+     * @throws InvalidConfigProviderException
      */
     public function __construct(
         iterable $providers = [],
@@ -79,6 +82,7 @@ EOT;
         }
 
         $providers    = $this->preProcessProviders($preProcessors, $providers);
+        $providers    = $this->validateNoDuplicateProviders($providers);
         $this->config = $this->loadConfigFromProviders($providers);
         $this->config = $this->postProcessConfig($postProcessors, $this->config);
         $this->cacheConfig($this->config, $cachedConfigFile);
@@ -90,6 +94,35 @@ EOT;
     public function getMergedConfig()
     {
         return $this->config;
+    }
+
+    /**
+     * Throw an exception if duplicate config providers are found.
+     *
+     * @param ProviderIterable $providers
+     * @return ProviderIterable
+     * @throws InvalidConfigProviderException
+     */
+    private function validateNoDuplicateProviders(iterable $providers): iterable
+    {
+        $allProviders = $uniqueProviders = [];
+
+        foreach ($providers as $provider) {
+            $allProviders[] = $provider;
+            if (! is_string($provider) && ! is_object($provider)) {
+                continue;
+            }
+
+            if (in_array($provider, $uniqueProviders, true)) {
+                throw InvalidConfigProviderException::fromDuplicateProvider(
+                    is_string($provider) ? $provider : get_debug_type($provider)
+                );
+            }
+
+            $uniqueProviders[] = $provider;
+        }
+
+        return $allProviders;
     }
 
     /**
