@@ -2,27 +2,29 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.16.0 - TBD
+## 1.16.0 - 2024-11-11
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [1.16.0](https://github.com/laminas/laminas-config-aggregator/milestone/29)
 
-- Nothing.
+Feature release (minor)
 
-### Deprecated
+### 1.16.0
 
-- Nothing.
+- Total issues resolved: **0**
+- Total pull requests resolved: **3**
+- Total contributors: **3**
 
-### Removed
+#### Enhancement
 
-- Nothing.
+ - [51: Update to latest PHP 8.1 syntax](https://github.com/laminas/laminas-config-aggregator/pull/51) thanks to @samsonasik
+ - [47: Make sure config providers are unique](https://github.com/laminas/laminas-config-aggregator/pull/47) thanks to @alexmerlin
 
-### Fixed
+#### renovate
 
-- Nothing.
+ - [49: Update dependency laminas/laminas-coding-standard to v3](https://github.com/laminas/laminas-config-aggregator/pull/49) thanks to @renovate[bot]
 
 ## 1.15.0 - 2024-05-12
 
