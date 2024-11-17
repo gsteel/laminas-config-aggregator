@@ -2,27 +2,24 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.17.0 - TBD
+## 1.17.0 - 2024-11-17
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [1.17.0](https://github.com/laminas/laminas-config-aggregator/milestone/31)
 
-- Nothing.
+Feature release (minor)
 
-### Deprecated
+### 1.17.0
 
-- Nothing.
+- Total issues resolved: **0**
+- Total pull requests resolved: **1**
+- Total contributors: **1**
 
-### Removed
+#### Enhancement
 
-- Nothing.
-
-### Fixed
-
-- Nothing.
+ - [52: Add support for PHP 8.4](https://github.com/laminas/laminas-config-aggregator/pull/52) thanks to @acelaya
 
 ## 1.16.0 - 2024-11-11
 
